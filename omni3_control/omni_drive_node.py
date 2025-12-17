@@ -15,8 +15,22 @@ class OmniDriveNode(Node):
         self.theta = [pi/2, -pi/6, -5*pi/6]
         self.sub = self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, 1)
 
+	# サブスクライバ: 値を保存するだけ
+        self.sub = self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, 10)
+
+        # タイマー: 10Hz (0.1秒) ごとに計算・出力
+        timer_period = 0.1  
+        self.timer = self.create_timer(timer_period, self.timer_callback)
+
     def cmd_vel_callback(self, msg: Twist):
-        vx, vy, omega = msg.linear.x, msg.linear.y, msg.angular.z
+        self.current_vx = msg.linear.x
+        self.current_vy = msg.linear.y
+        self.current_omega = msg.angular.z
+    def timer_callback(self):
+        vx = self.current_vx = msg.linear.x
+        vy = self.current_vy = msg.linear.y
+        omega = self.current_omega = msg.angular.z
+
         motor_sign = [1, 1, 1]  # 各モータの回転方向の符号
         pwm_values = []
         for th, sign in zip(self.theta, motor_sign):
