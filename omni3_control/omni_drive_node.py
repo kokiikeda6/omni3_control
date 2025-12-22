@@ -53,7 +53,7 @@ class OmniDriveNode(Node):
         pwm_values = []
         for th, sign in zip(self.theta, motor_sign):
             #speed = vx * cos(th) + vy * sin(th) + omega
-            speed = vx * cos(th) + vy * sin(th) + omega*-1
+            speed = -vx * cos(th) + -vy * sin(th) + omega
             pwm = int(self.STOP + sign * speed * 200)
             pwm = max(150, min(600, pwm))
             if pwm == self.STOP:
